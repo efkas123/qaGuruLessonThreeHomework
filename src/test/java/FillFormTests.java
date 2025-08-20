@@ -5,21 +5,26 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Keys;
 
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.open;
+import static com.codeborne.selenide.Condition.text;
+import static com.codeborne.selenide.Selenide.*;
 
 public class FillFormTests {
     @BeforeAll
-    static void beforeAll() {
+    static void setupEnvironment() {
         Configuration.browserSize = "1920x1080";
         Configuration.baseUrl = "https://demoqa.com/automation-practice-form";
-        Configuration.holdBrowserOpen = true;
+        Configuration.pageLoadStrategy = "eager";
+        Configuration.holdBrowserOpen = true; //Used for debug
     }
 
     @Test
     void fillFormTests() {
         open("/");
-        //Простые текстовые поля
+        //Simple text fields
+
+        executeJavaScript("$('footer').remove();");
+        executeJavaScript("$('#fixedban').remove();");
+
         $("input#firstName").setValue("Filipp");
         $("input#lastName").setValue("Kotov");
         $("input#userEmail").setValue("test@filippkotov.ru");
@@ -28,35 +33,39 @@ public class FillFormTests {
         $("input#subjectsInput").setValue("English").pressEnter();
         $("input#subjectsInput").setValue("Math").pressEnter();
 
-        //Сложные поля
-        //Выбираем дату
+        //Specific fields
+        //Calendar fill
         $("input#dateOfBirthInput").click();
         $(".react-datepicker__year-select").selectOption("2004");
         $(".react-datepicker__month-select").selectOption("January");
         $(".react-datepicker__day--027:not(.react-datepicker__day--outside-month)").click();
 
-        //Выбираем Hobbies
+        //Hobbies fill
         $("label[for='hobbies-checkbox-1']").click();
         $("label[for='hobbies-checkbox-2']").click();
         $("label[for='hobbies-checkbox-3']").click();
 
-        //Выбираем Gender male
+        //Gender male test
         $("label[for='gender-radio-1']").click();
 
-        //Выбираем State and City
+        //State and City fill
         //State
         $("#state").click(); // Открыть список
         $("#react-select-3-input").setValue("NCR")
                 .pressEnter(); // Выбрать NCR
-        //City
+        //City fill
         $("#city");
         $("#react-select-4-input").setValue("Delhi")
                 .pressEnter();
 
-        //Profile Picture
+        //Profile Picture upload
         $("input#uploadPicture").uploadFromClasspath("data/avatar.jpg");
 
         //Submit
         $("button#submit").click();
+
+        //Verifying table test
+        $("div#example-modal-sizes-title-lg").shouldHave(text("Thanks for submitting the form"));
+        $("tbody").shouldHave(text("Filipp Kotov"));
     }
 }
