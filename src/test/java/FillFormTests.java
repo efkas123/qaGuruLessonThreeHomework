@@ -14,7 +14,7 @@ public class FillFormTests {
         Configuration.browserSize = "1920x1080";
         Configuration.baseUrl = "https://demoqa.com/automation-practice-form";
         Configuration.pageLoadStrategy = "eager";
-        Configuration.holdBrowserOpen = true; //Used for debug
+        //Configuration.holdBrowserOpen = true; //Used for debug
     }
 
     @Test
